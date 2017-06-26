@@ -46,10 +46,18 @@ header{
 	border-radius:5px;
 	background:url(pics/loadingImg.gif) no-repeat #ccc center center;
 }
-.pics img{
+/* .pics img{
 	display:block;
 	width: 7rem;
 	border-radius:5px;
+} */
+/*此时把.pics下的img的样式改为canvas的样式*/
+.pics canvas{
+	display:block;
+	width: 7rem;
+	border-radius:5px;
+	opacity:0;
+	transition: 1s opacity;
 }
 footer{
 	position:absolute;
@@ -108,13 +116,27 @@ footer{
 		function showImg(li){
 			var img = new Image(); //新建一张图片
 			img.src = li.src;
-			li.appendChild(img);
+			// li.appendChild(img);  //不再用创建img的方式，改用创建canvas方式
 			/*
 				加载图片的两个过程：
 					1.加载
 					2.渲染
 				--canvas渲染性能高（用GPU,直接走显卡，硬件计算比普通软件计算性能高）
 			*/
+			img.onload = function(){
+				var c = document.createElement("canvas");
+				var ctx = c.getContext("2d");
+				c.width = img.width;
+				c.height = img.height;
+				ctx.drawImage(img,0,0,c.width,c.height);
+				li.appendChild(c);
+				// c.style.opacity = 1;
+				//transition在使用的时候，元素没有渲染完的时候，transition是没有效果的，所以用个定时器来延迟等待元素渲染完
+				setTimeout(function(){
+					c.style.opacity = 1;
+				},100);
+			}
+			
 		}
 	}
 	/*	console.log(dataUrl);*/
