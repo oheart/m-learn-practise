@@ -118,7 +118,7 @@ footer{
 			for(var i = 0; i < li.length; i++){
 				var top = li[i].getBoundingClientRect().top; //获取到元素在屏幕中的绝对坐标
 				// 当图片没有加载过且在可视区域才创建图片，否则不重复创建
-				if(!li.isLoad && top >= minTop && top < maxTop){
+				if(!li[i].isLoad && top >= minTop && top < maxTop){
 					li[i].isLoad = true; //加载过之后将加载标识设为true
 					showImg(li[i]);
 					console.log(i);
