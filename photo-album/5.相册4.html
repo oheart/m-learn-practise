@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width,user-scalable=no">
 <!--当前页面的三要素-->
-<title>相册3</title>
+<title>相册4</title>
 <meta name="Keywords" content="关键词,关键词">
 <meta name="description" content="">
 <style type="text/css">
@@ -90,6 +90,10 @@ footer{
 		var start = 0; //从第0张开始
 		var minTop = wrap.getBoundingClientRect().top;
 		var maxTop = minTop + wrap.getBoundingClientRect().height;
+		var maxScroll = wrap.clientHeight - child.offsetHeight;
+		var isLoad = false;
+		var footerH = footer.offsetHeight;
+		// console.log(maxScroll);
 		// console.log(minTop,maxTop);
 		cssTransform(footer,"scale",0);
 		createLi();
@@ -97,8 +101,33 @@ footer{
 		cssTransform(child,"translateZ",0.01);
 		// 滑屏回调
 		callBack = {
+			start:function(){
+				var scrollTop = cssTransform(child,'translateY');
+				maxScroll = wrap.clientHeight - child.offsetHeight;
+				console.log(scrollTop,maxScroll);
+				if(scrollTop <= maxScroll){
+					isLoad = true;
+				}
+			},
 			in:function(){
 				createImg();
+				var scrollTop = cssTransform(child,'translateY');
+				if(isLoad){
+					var over = maxScroll - scrollTop;  //超出多少
+					console.log(over/footerH);
+					var scale = over/footerH;
+					scale = scale > 1 ? 1 : scale;
+					scale = scale < 0 ? 0 : scale;
+					cssTransform(footer,'scale',scale);
+				}
+			},
+			end:function(){
+				var scrollTop = cssTransform(child,'translateY');
+				var over = maxScroll - scrollTop;
+				if(isLoad && over >= footerH){
+					console.log('该加载新图了');
+				}
+				isLoad = false;
 			}
 		}
 		// 滑屏
